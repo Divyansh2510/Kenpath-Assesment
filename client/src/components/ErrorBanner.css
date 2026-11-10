@@ -1,0 +1,25 @@
+.error-banner {
+  background-color: #ffebee;
+  border: 1px solid #ef5350;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #c62828;
+}
+
+.error-banner-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #c62828;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.error-banner-close:hover {
+  color: #b71c1c;
+}

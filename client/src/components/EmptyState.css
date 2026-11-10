@@ -1,0 +1,20 @@
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #666;
+}
+
+.empty-state-message {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state-link {
+  color: #e91e63;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.empty-state-link:hover {
+  text-decoration: underline;
+}
