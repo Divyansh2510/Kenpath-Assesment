@@ -31,8 +31,8 @@ function createApp() {
 
   // Mount routes
   app.use('/api/auth', authRoutes);
-  // TODO: Add readings and reports routes
-  // app.use('/api/readings', readingsRoutes);
+  app.use('/api/readings', require('./routes/readings.routes'));
+  // TODO: Add reports routes
   // app.use('/api/reports', reportsRoutes);
 
   // 404 handler for unknown routes
