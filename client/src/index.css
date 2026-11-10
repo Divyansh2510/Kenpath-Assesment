@@ -22,15 +22,15 @@ button {
   font-family: inherit;
 }
 
-/* Global button styles */
+/* ===== Global button styles ===== */
 .btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1.2rem;
   border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
 }
 
 .btn:disabled {
@@ -39,48 +39,60 @@ button {
 }
 
 .btn-primary {
-  background-color: #e91e63;
+  background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
   color: white;
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.25);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #c2185b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(233, 30, 99, 0.35);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(233, 30, 99, 0.2);
 }
 
 .btn-secondary {
   background-color: #f5f5f5;
-  color: #333;
+  color: #555;
+  border: 2px solid #eee;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: #e0e0e0;
+  background-color: #ececec;
+  border-color: #ddd;
 }
 
-/* Form styles */
+/* ===== Form styles ===== */
 .form-group {
   display: flex;
   flex-direction: column;
 }
 
 .form-group label {
-  margin-bottom: 0.25rem;
-  font-weight: 500;
-  color: #333;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+  color: #444;
+  font-size: 0.85rem;
 }
 
 .form-group input,
 .form-group select {
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
+  padding: 0.65rem 0.85rem;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fafafa;
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
   border-color: #e91e63;
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
 .input-error {
@@ -97,4 +109,20 @@ button {
   color: #999;
   font-size: 0.875rem;
   margin-top: 0.25rem;
+}
+
+/* ===== Fade-in-up utility animation ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.5s ease both;
 }

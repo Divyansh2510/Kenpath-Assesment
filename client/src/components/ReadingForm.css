@@ -1,19 +1,19 @@
 .reading-form {
   background: white;
   border: none;
-  border-radius: 12px;
-  padding: 2rem;
+  border-radius: 8px;
+  padding: 1.25rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   height: fit-content;
   position: sticky;
-  top: 2rem;
+  top: 1rem;
 }
 
 .reading-form h3 {
   margin-top: 0;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   color: #e91e63;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -21,13 +21,13 @@
 
 .reading-form h3::before {
   content: '✏️';
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 .reading-form form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .form-actions {
