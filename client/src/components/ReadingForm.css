@@ -2,7 +2,7 @@
   background: white;
   border: none;
   border-radius: 8px;
-  padding: 1.25rem;
+  padding: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   position: relative;
   overflow: hidden;
@@ -23,14 +23,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   padding-top: 0.25rem;
 }
 
 .reading-form-header h3 {
   margin: 0;
   color: #e91e63;
-  font-size: 1.1rem;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
