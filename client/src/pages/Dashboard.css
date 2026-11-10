@@ -171,8 +171,8 @@
   align-items: start;
 }
 
-.dashboard-content > * {
-  min-height: 0;
+.dashboard-content > div {
+  height: 100%;
 }
 
 /* Mobile: stack vertically */
