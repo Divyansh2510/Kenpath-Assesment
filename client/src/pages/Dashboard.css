@@ -171,6 +171,10 @@
   align-items: stretch;
 }
 
+.dashboard-content > * {
+  min-height: 0;
+}
+
 /* Mobile: stack vertically */
 @media (max-width: 1024px) {
   .dashboard-content {
