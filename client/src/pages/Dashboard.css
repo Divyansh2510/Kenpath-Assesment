@@ -9,22 +9,94 @@
   padding: 1rem 1.5rem;
 }
 
-.dashboard-header {
+/* Welcome banner */
+.welcome-banner {
+  background: white;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
   margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.dashboard-header h1 {
+.welcome-text h1 {
   color: #333;
   font-size: 1.5rem;
+  margin: 0 0 0.25rem 0;
+}
+
+.welcome-date {
+  color: #666;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.quick-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.stat-card {
+  background: #fafafa;
+  border: 2px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 90px;
+  transition: all 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.stat-icon {
+  font-size: 1.25rem;
   margin-bottom: 0.25rem;
 }
 
-.dashboard-subtitle {
-  color: #666;
-  font-size: 0.875rem;
+.stat-number {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.15rem;
 }
 
-.date-picker-section {
+.stat-label {
+  font-size: 0.75rem;
+  color: #666;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.stat-normal {
+  border-color: #4caf50;
+  background: #f1f8f4;
+}
+
+.stat-high {
+  border-color: #ff9800;
+  background: #fff8f0;
+}
+
+.stat-low {
+  border-color: #2196f3;
+  background: #f0f7ff;
+}
+
+.stat-none {
+  border-color: #bdbdbd;
+}
+
+/* Date picker card */
+.date-picker-card {
   background: white;
   border: none;
   border-radius: 8px;
@@ -32,27 +104,60 @@
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.date-picker-section label {
+.date-nav-btn {
+  background: #f5f5f5;
+  border: 2px solid #eee;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.date-nav-btn:hover:not(:disabled) {
+  background: #e91e63;
+  color: white;
+  border-color: #e91e63;
+  transform: translateX(0);
+}
+
+.date-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.date-picker-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.date-friendly {
   font-weight: 600;
   color: #333;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
-.date-picker-section input {
-  flex: 1;
-  max-width: 250px;
-  padding: 0.5rem 0.75rem;
+.date-picker-center input[type="date"] {
+  padding: 0.4rem 0.6rem;
   border: 2px solid #e0e0e0;
   border-radius: 6px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   transition: all 0.2s;
+  max-width: 160px;
 }
 
-.date-picker-section input:focus {
+.date-picker-center input[type="date"]:focus {
   border-color: #e91e63;
   outline: none;
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
@@ -71,6 +176,16 @@
   .dashboard-content {
     grid-template-columns: 1fr;
   }
+  
+  .welcome-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .quick-stats {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
 @media (max-width: 640px) {
@@ -78,16 +193,32 @@
     padding: 1rem;
   }
 
-  .dashboard-header h1 {
+  .welcome-text h1 {
     font-size: 1.25rem;
   }
-
-  .date-picker-section {
-    flex-direction: column;
-    align-items: stretch;
+  
+  .welcome-banner {
+    padding: 1rem;
   }
-
-  .date-picker-section input {
-    max-width: none;
+  
+  .quick-stats {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .stat-card {
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 1rem;
+  }
+  
+  .date-picker-card {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .date-nav-btn {
+    width: 100%;
   }
 }
