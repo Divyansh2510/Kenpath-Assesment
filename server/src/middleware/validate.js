@@ -1,42 +1,44 @@
-const { z } = require('zod');
+const { ZodError } = require('zod');
 const AppError = require('../utils/AppError');
 
 /**
- * Middleware factory for validating request data with Zod schemas.
+ * Middleware wrapper for Zod schema validation.
+ * Validates request body, query params, or params against a Zod schema.
  * 
- * @param {object} schemas - Object with optional 'body', 'params', 'query' Zod schemas
+ * @param {object} schema - Zod schema object with optional body, query, params
  * @returns {Function} Express middleware
  * 
  * @example
- * router.post('/readings', 
- *   validate({ body: createReadingSchema }),
- *   readingsController.create
- * );
+ * router.post('/readings', validate({ body: createReadingSchema }), controller);
  */
-function validate(schemas) {
+function validate(schema) {
   return async (req, res, next) => {
     try {
-      if (schemas.body) {
-        req.body = await schemas.body.parseAsync(req.body);
+      // Validate each part of the request
+      if (schema.body) {
+        req.body = await schema.body.parseAsync(req.body);
       }
-      if (schemas.params) {
-        req.params = await schemas.params.parseAsync(req.params);
+      if (schema.query) {
+        req.query = await schema.query.parseAsync(req.query);
       }
-      if (schemas.query) {
-        req.query = await schemas.query.parseAsync(req.query);
+      if (schema.params) {
+        req.params = await schema.params.parseAsync(req.params);
       }
       next();
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        // Convert Zod errors to our error format
+      if (error instanceof ZodError) {
+        // Convert Zod errors to our standard format
         const fields = {};
         error.errors.forEach((err) => {
-          const path = err.path.join('.');
-          fields[path] = err.message;
+          const field = err.path.join('.');
+          fields[field] = err.message;
         });
-        
+
+        // Use the first error message as the main message
         const firstError = error.errors[0];
-        next(AppError.validationError(firstError.message, fields));
+        const message = firstError.message;
+
+        next(new AppError(400, 'VALIDATION_ERROR', message, fields));
       } else {
         next(error);
       }

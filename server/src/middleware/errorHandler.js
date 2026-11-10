@@ -2,71 +2,47 @@ const AppError = require('../utils/AppError');
 
 /**
  * Central error handling middleware.
- * Formats all errors into a consistent JSON structure.
- * 
- * Error response format:
- * {
- *   "error": {
- *     "code": "ERROR_CODE",
- *     "message": "Human-readable message",
- *     "fields": { "fieldName": "Field-specific error" } // optional
- *   }
- * }
+ * Catches all errors and formats them into consistent JSON responses.
+ * Hides internal error details in production.
  */
 function errorHandler(err, req, res, next) {
   // Default to 500 internal server error
-  let statusCode = 500;
-  let code = 'INTERNAL_ERROR';
-  let message = 'An unexpected error occurred.';
-  let fields = null;
+  let statusCode = err.statusCode || 500;
+  let code = err.code || 'INTERNAL_ERROR';
+  let message = err.message || 'An unexpected error occurred';
+  let fields = err.fields || null;
 
-  // Handle operational errors (AppError instances)
-  if (err.isOperational) {
-    statusCode = err.statusCode;
-    code = err.code;
-    message = err.message;
-    fields = err.fields;
-  } 
-  // Handle Zod validation errors
-  else if (err.name === 'ZodError') {
-    statusCode = 400;
-    code = 'VALIDATION_ERROR';
-    message = 'Validation failed.';
-    fields = {};
-    err.errors.forEach((error) => {
-      const path = error.path.join('.');
-      fields[path] = error.message;
-    });
-  }
-  // Handle PostgreSQL unique constraint violations
-  else if (err.code === '23505') {
+  // PostgreSQL unique constraint violation (23505)
+  if (err.code === '23505') {
     statusCode = 409;
     code = 'CONFLICT';
-    message = 'A record with this information already exists.';
+    
+    // Parse the constraint name to provide a better message
+    if (err.constraint === 'users_email_key') {
+      message = 'An account with this email already exists.';
+      fields = { email: message };
+    } else if (err.constraint === 'uq_user_date_slot') {
+      message = 'A reading for this slot already exists.';
+      fields = { slot: message };
+    } else {
+      message = 'This record already exists.';
+    }
   }
-  // Log unexpected errors
-  else {
-    console.error('Unexpected error:', err);
+
+  // Log errors for debugging (but don't expose details to client)
+  if (statusCode === 500) {
+    console.error('Internal server error:', err);
+    message = 'An unexpected error occurred. Please try again later.';
   }
 
   // Send error response
-  const response = {
+  res.status(statusCode).json({
     error: {
       code,
       message,
+      ...(fields && { fields }),
     },
-  };
-
-  if (fields) {
-    response.error.fields = fields;
-  }
-
-  // In development, include stack trace
-  if (process.env.NODE_ENV === 'development' && !err.isOperational) {
-    response.error.stack = err.stack;
-  }
-
-  res.status(statusCode).json(response);
+  });
 }
 
 module.exports = errorHandler;

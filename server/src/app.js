@@ -2,6 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const env = require('./config/env');
+const errorHandler = require('./middleware/errorHandler');
 
 /**
  * Build and configure the Express application.
@@ -42,8 +43,8 @@ function createApp() {
     });
   });
 
-  // TODO: Add error handler middleware here
-  // app.use(errorHandler);
+  // Central error handler (must be last)
+  app.use(errorHandler);
 
   return app;
 }
