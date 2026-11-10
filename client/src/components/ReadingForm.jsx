@@ -1,16 +1,15 @@
 /**
  * Reading form component for add/edit.
+ * Date is controlled by parent component (Dashboard).
  */
 import { useState, useEffect } from 'react';
 import { SLOTS, SLOT_KEYS } from '../utils/constants';
 import { validateReading } from '../utils/validation';
-import { getTodayString } from '../utils/dates';
 import ErrorBanner from './ErrorBanner';
 import './ReadingForm.css';
 
-export default function ReadingForm({ reading, onSubmit, onCancel, loading, defaultDate }) {
+export default function ReadingForm({ reading, onSubmit, onCancel, loading, selectedDate }) {
   const [formData, setFormData] = useState({
-    date: reading?.date || defaultDate || getTodayString(),
     slot: reading?.slot || '',
     value: reading?.value || '',
   });
@@ -21,19 +20,17 @@ export default function ReadingForm({ reading, onSubmit, onCancel, loading, defa
   useEffect(() => {
     if (reading) {
       setFormData({
-        date: reading.date,
         slot: reading.slot,
         value: reading.value,
       });
+    } else {
+      // Reset when switching back to add mode
+      setFormData({
+        slot: '',
+        value: '',
+      });
     }
   }, [reading]);
-
-  // Sync form date with defaultDate when not editing
-  useEffect(() => {
-    if (!reading && defaultDate) {
-      setFormData((prev) => ({ ...prev, date: defaultDate }));
-    }
-  }, [defaultDate, reading]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,19 +46,24 @@ export default function ReadingForm({ reading, onSubmit, onCancel, loading, defa
     setErrors({});
     setGeneralError('');
 
+    // Add the selected date to form data
+    const submitData = {
+      ...formData,
+      date: selectedDate,
+    };
+
     // Client-side validation
-    const validation = validateReading(formData);
+    const validation = validateReading(submitData);
     if (!validation.valid) {
       setErrors(validation.errors);
       return;
     }
 
     try {
-      await onSubmit(formData);
+      await onSubmit(submitData);
       // Reset form on success (only for add mode)
       if (!reading) {
         setFormData({
-          date: defaultDate || getTodayString(),
           slot: '',
           value: '',
         });
@@ -86,25 +88,6 @@ export default function ReadingForm({ reading, onSubmit, onCancel, loading, defa
       <ErrorBanner message={generalError} onClose={() => setGeneralError('')} />
 
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="date">Date</label>
-          <input
-            type="date"
-            id="date"
-            name="date"
-            value={formData.date}
-            max={getTodayString()}
-            onChange={handleChange}
-            className={errors.date ? 'input-error' : ''}
-            required
-          />
-          {errors.date && (
-            <span className="field-error" role="alert">
-              {errors.date}
-            </span>
-          )}
-        </div>
-
         <div className="form-group">
           <label htmlFor="slot">Time Slot</label>
           <select

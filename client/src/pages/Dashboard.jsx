@@ -96,7 +96,7 @@ export default function Dashboard() {
           onSubmit={editingReading ? handleUpdate : handleCreate}
           onCancel={editingReading ? handleCancelEdit : null}
           loading={formLoading}
-          defaultDate={selectedDate}
+          selectedDate={selectedDate}
         />
 
         <ReadingList
