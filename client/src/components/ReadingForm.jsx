@@ -8,16 +8,16 @@ import { getTodayString } from '../utils/dates';
 import ErrorBanner from './ErrorBanner';
 import './ReadingForm.css';
 
-export default function ReadingForm({ reading, onSubmit, onCancel, loading }) {
+export default function ReadingForm({ reading, onSubmit, onCancel, loading, defaultDate }) {
   const [formData, setFormData] = useState({
-    date: reading?.date || getTodayString(),
+    date: reading?.date || defaultDate || getTodayString(),
     slot: reading?.slot || '',
     value: reading?.value || '',
   });
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState('');
 
-  // Update form when reading prop changes
+  // Update form when reading prop changes (editing mode)
   useEffect(() => {
     if (reading) {
       setFormData({
@@ -27,6 +27,13 @@ export default function ReadingForm({ reading, onSubmit, onCancel, loading }) {
       });
     }
   }, [reading]);
+
+  // Sync form date with defaultDate when not editing
+  useEffect(() => {
+    if (!reading && defaultDate) {
+      setFormData((prev) => ({ ...prev, date: defaultDate }));
+    }
+  }, [defaultDate, reading]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,7 +61,7 @@ export default function ReadingForm({ reading, onSubmit, onCancel, loading }) {
       // Reset form on success (only for add mode)
       if (!reading) {
         setFormData({
-          date: getTodayString(),
+          date: defaultDate || getTodayString(),
           slot: '',
           value: '',
         });
