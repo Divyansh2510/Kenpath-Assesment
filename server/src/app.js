@@ -32,8 +32,7 @@ function createApp() {
   // Mount routes
   app.use('/api/auth', authRoutes);
   app.use('/api/readings', require('./routes/readings.routes'));
-  // TODO: Add reports routes
-  // app.use('/api/reports', reportsRoutes);
+  app.use('/api/reports', require('./routes/reports.routes'));
 
   // 404 handler for unknown routes
   app.use((req, res) => {
