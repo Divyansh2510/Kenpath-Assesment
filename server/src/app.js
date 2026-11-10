@@ -3,6 +3,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const env = require('./config/env');
 const errorHandler = require('./middleware/errorHandler');
+const authRoutes = require('./routes/auth.routes');
 
 /**
  * Build and configure the Express application.
@@ -28,8 +29,9 @@ function createApp() {
     res.json({ status: 'ok' });
   });
 
-  // TODO: Mount routes here
-  // app.use('/api/auth', authRoutes);
+  // Mount routes
+  app.use('/api/auth', authRoutes);
+  // TODO: Add readings and reports routes
   // app.use('/api/readings', readingsRoutes);
   // app.use('/api/reports', reportsRoutes);
 
