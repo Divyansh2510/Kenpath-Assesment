@@ -1,112 +1,340 @@
+/* ===================================================================
+   Navbar — Glassmorphism Design
+   =================================================================== */
+
+/* ---- Base bar ---- */
 .navbar {
-  background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
-  border-bottom: none;
-  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 2px solid #e91e63;
+  box-shadow: 0 4px 24px rgba(233, 30, 99, 0.08);
 }
 
 .navbar-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 1.25rem 2rem;
+  padding: 0.85rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+/* ---- Logo ---- */
 .navbar-logo {
-  font-size: 1.75rem;
+  font-size: 1.65rem;
   font-weight: 800;
-  color: white;
+  color: #e91e63;
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  transition: all 0.2s;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  gap: 0.45rem;
+  transition: transform 0.25s ease;
 }
 
 .navbar-logo:hover {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
+.navbar-logo-icon {
+  display: inline-block;
+  animation: logo-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes logo-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 0 rgba(233, 30, 99, 0));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 8px rgba(233, 30, 99, 0.55));
+    transform: scale(1.08);
+  }
+}
+
+.navbar-logo-text {
+  background: linear-gradient(135deg, #e91e63, #c2185b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ---- Nav links ---- */
 .navbar-links {
   display: flex;
-  gap: 2rem;
-}
-
-.navbar-link {
-  color: rgba(255, 255, 255, 0.9);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1.05rem;
-  transition: all 0.2s;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-}
-
-.navbar-link:hover {
-  color: white;
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
-}
-
-.navbar-user {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.navbar-username {
-  color: white;
-  font-weight: 600;
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
   gap: 0.5rem;
 }
 
-.navbar-username::before {
-  content: '👤';
-  font-size: 1.1rem;
-}
-
-.navbar-user .btn-secondary {
-  background-color: white;
-  color: #e91e63;
+.navbar-link {
+  position: relative;
+  color: #555;
+  text-decoration: none;
   font-weight: 600;
-  padding: 0.6rem 1.5rem;
+  font-size: 0.98rem;
+  padding: 0.45rem 1rem;
   border-radius: 8px;
-  transition: all 0.2s;
+  transition: color 0.25s ease, background 0.25s ease;
 }
 
-.navbar-user .btn-secondary:hover:not(:disabled) {
-  background-color: #f5f5f5;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+/* Underline-grow-from-center hover */
+.navbar-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: #e91e63;
+  transition: width 0.3s ease, left 0.3s ease;
+  border-radius: 1px;
 }
 
+.navbar-link:hover {
+  color: #e91e63;
+  background: rgba(233, 30, 99, 0.06);
+}
+
+.navbar-link:hover::after {
+  width: 60%;
+  left: 20%;
+}
+
+/* Active route indicator */
+.navbar-link--active {
+  color: #e91e63;
+  font-weight: 700;
+}
+
+.navbar-link--active::after {
+  width: 60%;
+  left: 20%;
+  background: #e91e63;
+}
+
+/* ---- User section ---- */
+.navbar-user {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-avatar-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.35rem 0.75rem 0.35rem 0.35rem;
+  background: rgba(233, 30, 99, 0.07);
+  border: 1.5px solid rgba(233, 30, 99, 0.18);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+  font-family: inherit;
+  font-size: 0.92rem;
+}
+
+.navbar-avatar-btn:hover {
+  background: rgba(233, 30, 99, 0.13);
+  box-shadow: 0 2px 10px rgba(233, 30, 99, 0.12);
+}
+
+.navbar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e91e63, #c2185b);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.88rem;
+  flex-shrink: 0;
+}
+
+.navbar-username {
+  color: #333;
+  font-weight: 600;
+}
+
+/* Caret */
+.navbar-caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid #888;
+  transition: transform 0.25s ease;
+}
+
+.navbar-caret--open {
+  transform: rotate(180deg);
+}
+
+/* ---- Dropdown ---- */
+.navbar-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(233, 30, 99, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0;
+  animation: dropdown-in 0.2s ease;
+  z-index: 100;
+}
+
+@keyframes dropdown-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.navbar-dropdown-header {
+  padding: 0.6rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.navbar-dropdown-name {
+  font-weight: 700;
+  color: #222;
+  font-size: 0.95rem;
+}
+
+.navbar-dropdown-email {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.navbar-dropdown-divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+  margin: 0.25rem 0;
+}
+
+.navbar-dropdown-logout {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.55rem 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #e91e63;
+  transition: background 0.2s ease;
+}
+
+.navbar-dropdown-logout:hover {
+  background: rgba(233, 30, 99, 0.07);
+}
+
+/* ---- Hamburger (mobile) ---- */
+.navbar-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.navbar-hamburger:hover {
+  background: rgba(233, 30, 99, 0.08);
+}
+
+.navbar-hamburger-line {
+  display: block;
+  width: 100%;
+  height: 2.5px;
+  background: #e91e63;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Animate to X on open */
+.navbar-hamburger--open .navbar-hamburger-line:nth-child(1) {
+  transform: translateY(7.5px) rotate(45deg);
+}
+
+.navbar-hamburger--open .navbar-hamburger-line:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.navbar-hamburger--open .navbar-hamburger-line:nth-child(3) {
+  transform: translateY(-7.5px) rotate(-45deg);
+}
+
+/* ---- Responsive ≤768px ---- */
 @media (max-width: 768px) {
   .navbar-container {
-    padding: 1rem;
+    padding: 0.75rem 1rem;
     flex-wrap: wrap;
-    gap: 1rem;
+  }
+
+  .navbar-hamburger {
+    display: flex;
+    order: 3;
   }
 
   .navbar-links {
-    gap: 1rem;
-    order: 3;
+    order: 4;
     width: 100%;
-    justify-content: center;
+    flex-direction: column;
+    gap: 0;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.35s ease, opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  .navbar-links--open {
+    max-height: 200px;
+    opacity: 1;
+    padding-top: 0.5rem;
+  }
+
+  .navbar-links .navbar-link {
+    padding: 0.65rem 1rem;
+    border-radius: 8px;
+  }
+
+  .navbar-user {
+    order: 2;
   }
 
   .navbar-username {
     display: none;
   }
 
+  .navbar-avatar-btn {
+    padding: 0.25rem;
+    background: none;
+    border: none;
+  }
+
+  .navbar-caret {
+    display: none;
+  }
+
   .navbar-logo {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
 }

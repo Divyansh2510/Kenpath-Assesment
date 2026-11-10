@@ -1,8 +1,9 @@
 /**
  * Dashboard page - main page for managing readings.
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { getTodayString } from '../utils/dates';
+import { useAuth } from '../context/AuthContext';
 import apiClient from '../api/client';
 import Navbar from '../components/Navbar';
 import ReadingForm from '../components/ReadingForm';
@@ -10,6 +11,7 @@ import ReadingList from '../components/ReadingList';
 import './Dashboard.css';
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState(getTodayString());
   const [readings, setReadings] = useState([]);
   const [editingReading, setEditingReading] = useState(null);
@@ -73,43 +75,129 @@ export default function Dashboard() {
     setEditingReading(null);
   };
 
+  /* ---------- Quick stats ---------- */
+  const stats = useMemo(() => {
+    const count = readings.length;
+    if (count === 0) return { count: 0, average: 0, status: 'No data', statusClass: 'stat-none' };
+    const sum = readings.reduce((acc, r) => acc + Number(r.value), 0);
+    const avg = Math.round(sum / count);
+    let status = 'Normal';
+    let statusClass = 'stat-normal';
+    if (avg < 70) { status = 'Low'; statusClass = 'stat-low'; }
+    else if (avg > 140) { status = 'High'; statusClass = 'stat-high'; }
+    return { count, average: avg, status, statusClass };
+  }, [readings]);
+
+  /* ---------- Date navigation ---------- */
+  const navigateDate = (direction) => {
+    const d = new Date(selectedDate + 'T00:00:00');
+    d.setDate(d.getDate() + direction);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    const newDate = `${yyyy}-${mm}-${dd}`;
+    if (newDate <= getTodayString()) setSelectedDate(newDate);
+  };
+
+  const friendlyDate = new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  const isToday = selectedDate === getTodayString();
+
+  /* ---------- Greeting ---------- */
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const displayName = user?.name?.split(' ')[0] || 'there';
+
   return (
     <div className="dashboard">
       <Navbar />
 
-      <div className="dashboard-container">
-        <div className="dashboard-header">
-          <h1>📊 Dashboard</h1>
-          <p className="dashboard-subtitle">Track and manage your daily glucose readings</p>
+      <div className="dashboard-container fade-in-up">
+        {/* Welcome banner */}
+        <div className="welcome-banner">
+          <div className="welcome-text">
+            <h1>{greeting}, {displayName} 👋</h1>
+            <p className="welcome-date">{friendlyDate}</p>
+          </div>
+
+          <div className="quick-stats">
+            <div className="stat-card">
+              <span className="stat-icon">📊</span>
+              <span className="stat-number">{stats.count}</span>
+              <span className="stat-label">Readings</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-icon">📈</span>
+              <span className="stat-number">{stats.average || '—'}</span>
+              <span className="stat-label">Avg mg/dl</span>
+            </div>
+            <div className={`stat-card ${stats.statusClass}`}>
+              <span className="stat-icon">
+                {stats.status === 'Normal' ? '✅' : stats.status === 'High' ? '⚠️' : stats.status === 'Low' ? '🔻' : '➖'}
+              </span>
+              <span className="stat-number">{stats.status}</span>
+              <span className="stat-label">Status</span>
+            </div>
+          </div>
         </div>
 
-        <div className="date-picker-section">
-          <label htmlFor="date-picker">📅 Select Date:</label>
-          <input
-            type="date"
-            id="date-picker"
-            value={selectedDate}
-            max={getTodayString()}
-            onChange={(e) => setSelectedDate(e.target.value)}
-          />
+        {/* Date picker card */}
+        <div className="date-picker-card">
+          <button
+            className="date-nav-btn"
+            onClick={() => navigateDate(-1)}
+            title="Previous day"
+          >
+            ← Yesterday
+          </button>
+
+          <div className="date-picker-center">
+            <span className="date-friendly">{friendlyDate}</span>
+            <input
+              type="date"
+              id="date-picker"
+              value={selectedDate}
+              max={getTodayString()}
+              onChange={(e) => setSelectedDate(e.target.value)}
+            />
+          </div>
+
+          <button
+            className="date-nav-btn"
+            onClick={() => navigateDate(1)}
+            disabled={isToday}
+            title="Next day"
+          >
+            Tomorrow →
+          </button>
         </div>
 
+        {/* Main content */}
         <div className="dashboard-content">
-          <ReadingForm
-            reading={editingReading}
-            onSubmit={editingReading ? handleUpdate : handleCreate}
-            onCancel={editingReading ? handleCancelEdit : null}
-            loading={formLoading}
-            selectedDate={selectedDate}
-          />
+          <div className="fade-in-up" style={{ animationDelay: '0.1s' }}>
+            <ReadingForm
+              reading={editingReading}
+              onSubmit={editingReading ? handleUpdate : handleCreate}
+              onCancel={editingReading ? handleCancelEdit : null}
+              loading={formLoading}
+              selectedDate={selectedDate}
+            />
+          </div>
 
-          <ReadingList
-            readings={readings}
-            date={selectedDate}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            loading={loading}
-          />
+          <div className="fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <ReadingList
+              readings={readings}
+              date={selectedDate}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              loading={loading}
+            />
+          </div>
         </div>
       </div>
     </div>

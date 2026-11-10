@@ -81,30 +81,40 @@ export default function ReadingForm({ reading, onSubmit, onCancel, loading, sele
     }
   };
 
+  const isEditing = !!reading;
+
   return (
     <div className="reading-form">
-      <h3>{reading ? 'Edit Reading' : 'Add New Reading'}</h3>
+      <div className="reading-form-accent"></div>
+
+      <div className="reading-form-header">
+        <h3>{isEditing ? '✏️ Edit Reading' : '➕ Add New Reading'}</h3>
+        {isEditing && <span className="mode-badge mode-edit">Editing</span>}
+        {!isEditing && <span className="mode-badge mode-add">New</span>}
+      </div>
 
       <ErrorBanner message={generalError} onClose={() => setGeneralError('')} />
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="slot">Time Slot</label>
-          <select
-            id="slot"
-            name="slot"
-            value={formData.slot}
-            onChange={handleChange}
-            className={errors.slot ? 'input-error' : ''}
-            required
-          >
-            <option value="">Select a time slot</option>
-            {SLOT_KEYS.map((key) => (
-              <option key={key} value={key}>
-                {SLOTS[key]}
-              </option>
-            ))}
-          </select>
+          <div className="select-wrapper">
+            <select
+              id="slot"
+              name="slot"
+              value={formData.slot}
+              onChange={handleChange}
+              className={errors.slot ? 'input-error' : ''}
+              required
+            >
+              <option value="">Select a time slot</option>
+              {SLOT_KEYS.map((key) => (
+                <option key={key} value={key}>
+                  {SLOTS[key]}
+                </option>
+              ))}
+            </select>
+          </div>
           {errors.slot && (
             <span className="field-error" role="alert">
               {errors.slot}
@@ -133,7 +143,7 @@ export default function ReadingForm({ reading, onSubmit, onCancel, loading, sele
 
         <div className="form-actions">
           <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Saving...' : 'Save'}
+            {loading ? 'Saving...' : isEditing ? 'Update Reading' : 'Save Reading'}
           </button>
           {onCancel && (
             <button type="button" className="btn btn-secondary" onClick={onCancel}>
