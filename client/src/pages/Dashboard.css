@@ -1,41 +1,76 @@
 .dashboard {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
 }
 
 .dashboard-container {
-  max-width: 800px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
 }
 
-.dashboard-container h1 {
-  color: #333;
+.dashboard-header {
   margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+  color: #333;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-subtitle {
+  color: #666;
+  font-size: 1rem;
 }
 
 .date-picker-section {
   background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border: none;
+  border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 2rem;
   display: flex;
   align-items: center;
   gap: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .date-picker-section label {
-  font-weight: 500;
+  font-weight: 600;
   color: #333;
+  font-size: 1.1rem;
 }
 
 .date-picker-section input {
   flex: 1;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  max-width: 300px;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
   font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.date-picker-section input:focus {
+  border-color: #e91e63;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+}
+
+/* Two column layout for desktop */
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* Mobile: stack vertically */
+@media (max-width: 1024px) {
+  .dashboard-content {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
@@ -43,8 +78,16 @@
     padding: 1rem;
   }
 
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
+
   .date-picker-section {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .date-picker-section input {
+    max-width: none;
   }
 }

@@ -1,21 +1,33 @@
 .reading-form {
   background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
+  border: none;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
 }
 
 .reading-form h3 {
   margin-top: 0;
-  margin-bottom: 1rem;
-  color: #333;
+  margin-bottom: 1.5rem;
+  color: #e91e63;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.reading-form h3::before {
+  content: '✏️';
+  font-size: 1.2rem;
 }
 
 .reading-form form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .form-actions {
@@ -24,7 +36,15 @@
   margin-top: 0.5rem;
 }
 
+.form-actions .btn {
+  flex: 1;
+}
+
 @media (max-width: 640px) {
+  .reading-form {
+    position: static;
+  }
+
   .form-actions {
     flex-direction: column;
   }

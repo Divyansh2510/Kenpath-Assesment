@@ -78,10 +78,13 @@ export default function Dashboard() {
       <Navbar />
 
       <div className="dashboard-container">
-        <h1>Dashboard</h1>
+        <div className="dashboard-header">
+          <h1>📊 Dashboard</h1>
+          <p className="dashboard-subtitle">Track and manage your daily glucose readings</p>
+        </div>
 
         <div className="date-picker-section">
-          <label htmlFor="date-picker">Select Date:</label>
+          <label htmlFor="date-picker">📅 Select Date:</label>
           <input
             type="date"
             id="date-picker"
@@ -91,21 +94,23 @@ export default function Dashboard() {
           />
         </div>
 
-        <ReadingForm
-          reading={editingReading}
-          onSubmit={editingReading ? handleUpdate : handleCreate}
-          onCancel={editingReading ? handleCancelEdit : null}
-          loading={formLoading}
-          selectedDate={selectedDate}
-        />
+        <div className="dashboard-content">
+          <ReadingForm
+            reading={editingReading}
+            onSubmit={editingReading ? handleUpdate : handleCreate}
+            onCancel={editingReading ? handleCancelEdit : null}
+            loading={formLoading}
+            selectedDate={selectedDate}
+          />
 
-        <ReadingList
-          readings={readings}
-          date={selectedDate}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          loading={loading}
-        />
+          <ReadingList
+            readings={readings}
+            date={selectedDate}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            loading={loading}
+          />
+        </div>
       </div>
     </div>
   );
