@@ -2,10 +2,10 @@
   background: white;
   border: none;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 0.875rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
 }
@@ -22,9 +22,10 @@
 
 .reading-list-header {
   margin-bottom: 0.75rem;
-  padding-bottom: 0.3rem;
+  padding-bottom: 0.5rem;
   padding-top: 0.25rem;
   border-bottom: 2px solid #f0f0f0;
+  flex-shrink: 0;
 }
 
 .reading-list-header h3 {
