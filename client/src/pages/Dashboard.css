@@ -13,8 +13,8 @@
 .welcome-banner {
   background: white;
   border-radius: 8px;
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 1rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -101,7 +101,7 @@
   border: none;
   border-radius: 8px;
   padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -167,12 +167,8 @@
 .dashboard-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  gap: 1rem;
   align-items: start;
-}
-
-.dashboard-content > div {
-  height: 100%;
 }
 
 /* Mobile: stack vertically */

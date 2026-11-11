@@ -8,7 +8,6 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: fit-content;
 }
 
 .reading-list::before {
