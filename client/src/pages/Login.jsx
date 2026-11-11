@@ -59,6 +59,7 @@ export default function Login() {
     <div className="auth-container">
       <div className="auth-card">
         <h1 className="auth-title">🩸 Sweety</h1>
+        <p className="auth-tagline">Blood Glucose Tracker</p>
         <h2 className="auth-subtitle">Login to your account</h2>
 
         <ErrorBanner message={generalError} onClose={() => setGeneralError('')} />
