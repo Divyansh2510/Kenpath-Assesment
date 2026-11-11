@@ -1,20 +1,18 @@
-version: '3.8'
-
 services:
   # PostgreSQL database
   db:
     image: postgres:15-alpine
     container_name: sweety-db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: sweety
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in your environment or root .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in your environment or root .env}
+      POSTGRES_DB: ${POSTGRES_DB:-sweety}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - sweety-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
       interval: 10s
       timeout: 5s
       retries: 5

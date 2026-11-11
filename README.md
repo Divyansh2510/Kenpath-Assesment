@@ -57,9 +57,9 @@ Copy `server/.env.example` to `server/.env` and configure:
 
 ```
 PORT=5000
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/sweety
-DATABASE_URL_TEST=postgresql://postgres:postgres@localhost:5432/sweety_test
-JWT_SECRET=change-me-to-a-long-random-string
+DATABASE_URL=postgresql://<db-user>:<url-encoded-password>@localhost:5432/sweety
+DATABASE_URL_TEST=postgresql://<db-user>:<url-encoded-password>@localhost:5432/sweety_test
+JWT_SECRET=<replace-with-a-long-random-secret>
 JWT_EXPIRES_IN=7d
 BCRYPT_SALT_ROUNDS=10
 CLIENT_ORIGIN=http://localhost:5173
@@ -86,6 +86,19 @@ Run migrations:
 cd server
 npm run db:migrate
 ```
+
+### Docker database (optional)
+
+Set `POSTGRES_USER` and a unique `POSTGRES_PASSWORD` in your shell or in a
+root `.env` file (ignored by Git), then start the database:
+
+```bash
+docker compose up -d db
+```
+
+Compose binds PostgreSQL to localhost only and requires a password instead of
+using a built-in default. Set `DATABASE_URL` in `server/.env` to the same
+database credentials; URL-encode any special characters in the password.
 
 ## Seed Data
 
