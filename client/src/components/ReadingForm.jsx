@@ -2,7 +2,7 @@
  * Reading form component for add/edit.
  * Date is controlled by parent component (Dashboard).
  */
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { SLOTS, SLOT_KEYS } from '../utils/constants';
 import { validateReading } from '../utils/validation';
 import ErrorBanner from './ErrorBanner';
@@ -15,22 +15,6 @@ export default function ReadingForm({ reading, onSubmit, onCancel, loading, sele
   });
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState('');
-
-  // Update form when reading prop changes (editing mode)
-  useEffect(() => {
-    if (reading) {
-      setFormData({
-        slot: reading.slot,
-        value: reading.value,
-      });
-    } else {
-      // Reset when switching back to add mode
-      setFormData({
-        slot: '',
-        value: '',
-      });
-    }
-  }, [reading]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -95,7 +79,7 @@ export default function ReadingForm({ reading, onSubmit, onCancel, loading, sele
 
       <ErrorBanner message={generalError} onClose={() => setGeneralError('')} />
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <div className="form-group">
           <label htmlFor="slot">Time Slot</label>
           <div className="select-wrapper">

@@ -20,12 +20,6 @@ export default function ReadingList({ readings, date, onEdit, onDelete, loading 
     readingsBySlot[reading.slot] = reading;
   });
 
-  const handleDelete = async (reading) => {
-    if (window.confirm(`Delete ${reading.slotLabel} reading (${reading.value} mg/dl)?`)) {
-      await onDelete(reading.id);
-    }
-  };
-
   const count = readings.length;
   const progressPercent = (count / MAX_READINGS_PER_DAY) * 100;
 
@@ -55,7 +49,7 @@ export default function ReadingList({ readings, date, onEdit, onDelete, loading 
           <span className="spinner">⏳</span> Loading readings…
         </div>
       ) : (
-        <div className="reading-slots">
+        <div className={`reading-slots${count === 0 ? ' reading-slots--empty' : ''}`}>
           {SLOT_KEYS.map((slotKey) => {
             const reading = readingsBySlot[slotKey];
             const statusClass = reading ? getValueStatus(reading.value) : 'status-empty';
@@ -93,7 +87,7 @@ export default function ReadingList({ readings, date, onEdit, onDelete, loading 
                       ✏️
                     </button>
                     <button
-                      onClick={() => handleDelete(reading)}
+                      onClick={() => onDelete(reading)}
                       className="btn-icon-modern btn-icon-danger"
                       title="Delete this reading"
                       aria-label="Delete"

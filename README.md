@@ -125,11 +125,14 @@ cd server
 npm test
 ```
 
-**Frontend tests (bonus):**
+**Frontend validation:**
 ```bash
 cd client
-npm test
+npm run build
+npm run lint
 ```
+
+Frontend automated tests are not currently configured.
 
 ## API Endpoints
 

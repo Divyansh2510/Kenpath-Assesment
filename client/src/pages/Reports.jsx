@@ -6,11 +6,24 @@ import { getTodayString } from '../utils/dates';
 import apiClient from '../api/client';
 import Navbar from '../components/Navbar';
 import EmptyState from '../components/EmptyState';
+import ErrorBanner from '../components/ErrorBanner';
 import './Reports.css';
+
+function requestReports(date) {
+  return Promise.all([
+    apiClient.get(`/reports/daily?date=${date}`),
+    apiClient.get(`/reports/month-to-date?date=${date}`),
+    apiClient.get(`/reports/monthly?date=${date}`),
+  ]);
+}
 
 function ReportCard({ report, loading }) {
   if (loading) {
-    return <div className="report-card">Loading...</div>;
+    return (
+      <div className="report-card report-card-loading" role="status" aria-live="polite">
+        Loading report…
+      </div>
+    );
   }
 
   const { type, range, stats, readings } = report;
@@ -45,7 +58,7 @@ function ReportCard({ report, loading }) {
             </div>
             <div className="stat-item">
               <span className="stat-label">Average</span>
-              <span className="stat-value highlight">{stats.average} mg/dl</span>
+              <span className="stat-value highlight">{Number(stats.average).toFixed(1)} mg/dl</span>
             </div>
           </div>
 
@@ -71,30 +84,41 @@ export default function Reports() {
   const [dailyReport, setDailyReport] = useState(null);
   const [mtdReport, setMtdReport] = useState(null);
   const [monthlyReport, setMonthlyReport] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loadedDate, setLoadedDate] = useState(null);
+  const [reportsErrorState, setReportsError] = useState({ date: '', message: '' });
+  const loading = loadedDate !== selectedDate;
+  const reportsError = reportsErrorState.date === selectedDate ? reportsErrorState.message : '';
 
   useEffect(() => {
-    fetchReports();
+    let active = true;
+
+    requestReports(selectedDate)
+      .then(([daily, mtd, monthly]) => {
+        if (!active) return;
+        setDailyReport(daily.data);
+        setMtdReport(mtd.data);
+        setMonthlyReport(monthly.data);
+        setReportsError({ date: selectedDate, message: '' });
+      })
+      .catch((error) => {
+        if (!active) return;
+        console.error('Failed to fetch reports:', error);
+        setDailyReport(null);
+        setMtdReport(null);
+        setMonthlyReport(null);
+        setReportsError({
+          date: selectedDate,
+          message: 'Unable to load reports. Please try again.',
+        });
+      })
+      .finally(() => {
+        if (active) setLoadedDate(selectedDate);
+      });
+
+    return () => {
+      active = false;
+    };
   }, [selectedDate]);
-
-  const fetchReports = async () => {
-    setLoading(true);
-    try {
-      const [daily, mtd, monthly] = await Promise.all([
-        apiClient.get(`/reports/daily?date=${selectedDate}`),
-        apiClient.get(`/reports/month-to-date?date=${selectedDate}`),
-        apiClient.get(`/reports/monthly?date=${selectedDate}`),
-      ]);
-
-      setDailyReport(daily.data);
-      setMtdReport(mtd.data);
-      setMonthlyReport(monthly.data);
-    } catch (error) {
-      console.error('Failed to fetch reports:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="reports">
@@ -114,10 +138,15 @@ export default function Reports() {
           />
         </div>
 
+        <ErrorBanner
+          message={reportsError}
+          onClose={() => setReportsError({ date: selectedDate, message: '' })}
+        />
+
         <div className="reports-grid">
-          {dailyReport && <ReportCard report={dailyReport} loading={loading} />}
-          {mtdReport && <ReportCard report={mtdReport} loading={loading} />}
-          {monthlyReport && <ReportCard report={monthlyReport} loading={loading} />}
+          {(dailyReport || loading) && <ReportCard report={dailyReport} loading={loading} />}
+          {(mtdReport || loading) && <ReportCard report={mtdReport} loading={loading} />}
+          {(monthlyReport || loading) && <ReportCard report={monthlyReport} loading={loading} />}
         </div>
       </div>
     </div>

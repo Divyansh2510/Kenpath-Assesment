@@ -3,6 +3,12 @@ const { MAX_READINGS_PER_DAY, SLOTS } = require('../constants/slots');
 const AppError = require('../utils/AppError');
 const pool = require('../db/pool');
 
+function duplicateSlotMessage(slot) {
+  const slotLabel = SLOTS[slot];
+  const article = /^[aeiou]/i.test(slotLabel) ? 'an' : 'a';
+  return `You already have ${article} ${slotLabel} reading for this date.`;
+}
+
 /**
  * Readings service - contains business logic for readings.
  */
@@ -51,12 +57,12 @@ async function createReading(userId, date, slot, value) {
     );
     
     if (existsResult.rows.length > 0) {
-      const slotLabel = SLOTS[slot];
+      const message = duplicateSlotMessage(slot);
       throw new AppError(
         409,
         'CONFLICT',
-        `You already have a ${slotLabel} reading for this date.`,
-        { slot: `You already have a ${slotLabel} reading for this date.` }
+        message,
+        { slot: message }
       );
     }
     
@@ -79,12 +85,12 @@ async function createReading(userId, date, slot, value) {
     
     // Handle unique constraint violation (backup to transaction logic)
     if (error.code === '23505' && error.constraint === 'uq_user_date_slot') {
-      const slotLabel = SLOTS[slot];
+      const message = duplicateSlotMessage(slot);
       throw new AppError(
         409,
         'CONFLICT',
-        `You already have a ${slotLabel} reading for this date.`,
-        { slot: `You already have a ${slotLabel} reading for this date.` }
+        message,
+        { slot: message }
       );
     }
     
@@ -163,12 +169,12 @@ async function updateReading(userId, readingId, date, slot, value) {
   const slotExists = await readingsRepo.existsByDateAndSlot(userId, date, slot, readingId);
   
   if (slotExists) {
-    const slotLabel = SLOTS[slot];
+    const message = duplicateSlotMessage(slot);
     throw new AppError(
       409,
       'CONFLICT',
-      `You already have a ${slotLabel} reading for this date.`,
-      { slot: `You already have a ${slotLabel} reading for this date.` }
+      message,
+      { slot: message }
     );
   }
   
@@ -178,12 +184,12 @@ async function updateReading(userId, readingId, date, slot, value) {
   } catch (error) {
     // Handle unique constraint violation
     if (error.code === '23505' && error.constraint === 'uq_user_date_slot') {
-      const slotLabel = SLOTS[slot];
+      const message = duplicateSlotMessage(slot);
       throw new AppError(
         409,
         'CONFLICT',
-        `You already have a ${slotLabel} reading for this date.`,
-        { slot: `You already have a ${slotLabel} reading for this date.` }
+        message,
+        { slot: message }
       );
     }
     throw error;

@@ -1,141 +1,159 @@
 .dashboard {
   min-height: 100vh;
-  background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
+  background:
+    radial-gradient(ellipse at 10% 0%, rgba(252, 228, 236, 0.72), transparent 38rem),
+    #f7f8fc;
   display: flex;
   flex-direction: column;
 }
 
 .dashboard-container {
-  max-width: 100%;
+  width: 100%;
   margin: 0;
-  padding: 0.75rem;
+  padding: 1.25rem clamp(1rem, 2vw, 2rem) 1rem;
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-/* Welcome banner */
+.welcome-banner,
+.date-picker-card {
+  background: #fff;
+  border: 1px solid #f0e9ed;
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(44, 35, 40, 0.055);
+}
+
 .welcome-banner {
-  background: white;
-  border-radius: 8px;
-  padding: 0.875rem 1rem;
-  margin-bottom: 0.75rem;
+  padding: clamp(1.25rem, 2vw, 2rem);
+  margin-bottom: 1.25rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 2rem;
+}
+
+.welcome-text {
+  min-width: 220px;
 }
 
 .welcome-text h1 {
-  color: #333;
-  font-size: 1.5rem;
-  margin: 0 0 0.25rem 0;
+  color: #25212a;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  line-height: 1.2;
+  margin: 0 0 0.55rem;
+  letter-spacing: -0.035em;
 }
 
 .welcome-date {
-  color: #666;
-  font-size: 0.85rem;
+  color: #77717a;
+  font-size: 0.95rem;
   margin: 0;
 }
 
 .quick-stats {
-  display: flex;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(112px, 1fr));
+  gap: 0.75rem;
 }
 
 .stat-card {
-  background: #fafafa;
-  border: 2px solid #f0f0f0;
-  border-radius: 8px;
-  padding: 0.6rem 0.875rem;
-  display: flex;
-  flex-direction: column;
+  background: #faf9fb;
+  border: 1px solid #eee9ef;
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
   align-items: center;
-  min-width: 85px;
-  transition: all 0.2s;
+  column-gap: 0.65rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 16px rgba(44, 35, 40, 0.08);
 }
 
 .stat-icon {
-  font-size: 1.25rem;
-  margin-bottom: 0.25rem;
+  grid-row: 1 / 3;
+  font-size: 1.35rem;
 }
 
 .stat-number {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 0.15rem;
+  color: #302a33;
+  font-size: 1.15rem;
+  font-weight: 750;
+  line-height: 1.2;
 }
 
 .stat-label {
-  font-size: 0.75rem;
-  color: #666;
+  color: #89828b;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.055em;
   text-transform: uppercase;
-  font-weight: 600;
 }
 
 .stat-normal {
-  border-color: #4caf50;
-  background: #f1f8f4;
+  background: #f1f8f3;
+  border-color: #dcefe1;
 }
 
 .stat-high {
-  border-color: #ff9800;
-  background: #fff8f0;
+  background: #fff7ed;
+  border-color: #f7e4cd;
 }
 
 .stat-low {
-  border-color: #2196f3;
-  background: #f0f7ff;
+  background: #f0f6ff;
+  border-color: #dbe8fb;
 }
 
 .stat-none {
-  border-color: #bdbdbd;
+  background: #f8f7f9;
 }
 
-/* Date picker card */
 .date-picker-card {
-  background: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0.6rem 0.875rem;
-  margin-bottom: 0.75rem;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  gap: 1rem;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.5rem;
 }
 
 .date-nav-btn {
-  background: #f5f5f5;
-  border: 2px solid #eee;
-  border-radius: 6px;
-  padding: 0.5rem 1rem;
+  justify-self: start;
+  background: #fff;
+  border: 1px solid #e8e2e8;
+  border-radius: 9px;
+  padding: 0.6rem 0.9rem;
+  color: #5e5661;
   font-size: 0.85rem;
-  font-weight: 600;
-  color: #555;
+  font-weight: 650;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
   white-space: nowrap;
 }
 
+.date-nav-btn:last-child {
+  justify-self: end;
+}
+
 .date-nav-btn:hover:not(:disabled) {
-  background: #e91e63;
-  color: white;
-  border-color: #e91e63;
-  transform: translateX(0);
+  background: #fff1f6;
+  border-color: #f1b6cb;
+  color: #c2185b;
+}
+
+.date-nav-btn:focus-visible {
+  outline: 3px solid rgba(233, 30, 99, 0.2);
+  outline-offset: 2px;
 }
 
 .date-nav-btn:disabled {
-  opacity: 0.3;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
@@ -143,90 +161,135 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
-  flex: 1;
+  gap: 0.3rem;
 }
 
 .date-friendly {
-  font-weight: 600;
-  color: #333;
-  font-size: 0.9rem;
+  color: #302a33;
+  font-size: 0.95rem;
+  font-weight: 700;
 }
 
 .date-picker-center input[type="date"] {
-  padding: 0.4rem 0.6rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  transition: all 0.2s;
-  max-width: 160px;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid #e8e2e8;
+  border-radius: 7px;
+  background: #faf9fb;
+  color: #746d77;
+  font: inherit;
+  font-size: 0.78rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .date-picker-center input[type="date"]:focus {
   border-color: #e91e63;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.12);
 }
 
-/* Two column layout for desktop */
 .dashboard-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.875rem;
-  align-items: start;
-  flex: 1;
-  overflow: auto;
-  align-content: start;
+  grid-template-columns: minmax(300px, 0.82fr) minmax(0, 1.45fr);
+  gap: 1.25rem;
+  align-items: stretch;
 }
 
-/* Mobile: stack vertically */
-@media (max-width: 1024px) {
-  .dashboard-content {
-    grid-template-columns: 1fr;
+.dashboard-content > * {
+  min-width: 0;
+}
+
+.dashboard-content .reading-form,
+.dashboard-content .reading-list {
+  height: 100%;
+}
+
+@media (max-width: 900px) {
+  .dashboard-container {
+    padding-top: 1rem;
   }
-  
+
   .welcome-banner {
-    flex-direction: column;
     align-items: flex-start;
+    flex-direction: column;
+    gap: 1.25rem;
   }
-  
+
   .quick-stats {
     width: 100%;
-    justify-content: space-between;
+  }
+
+  .dashboard-content {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 560px) {
   .dashboard-container {
-    padding: 1rem;
+    padding: 0.85rem 0.85rem 0.75rem;
+  }
+
+  .welcome-banner {
+    padding: 1.15rem;
+    border-radius: 13px;
+  }
+
+  .welcome-text {
+    min-width: 0;
   }
 
   .welcome-text h1 {
-    font-size: 1.25rem;
+    font-size: 1.4rem;
   }
-  
-  .welcome-banner {
-    padding: 1rem;
-  }
-  
+
   .quick-stats {
-    flex-direction: column;
-    width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
   }
-  
+
   .stat-card {
-    flex-direction: row;
-    justify-content: flex-start;
-    width: 100%;
-    gap: 1rem;
-  }
-  
-  .date-picker-card {
+    display: flex;
     flex-direction: column;
-    padding: 1rem;
+    align-items: flex-start;
+    gap: 0.25rem;
+    min-width: 0;
+    padding: 0.65rem 0.55rem;
   }
-  
-  .date-nav-btn {
-    width: 100%;
+
+  .stat-icon {
+    font-size: 1.1rem;
+  }
+
+  .stat-number {
+    font-size: 0.98rem;
+  }
+
+  .stat-label {
+    font-size: 0.58rem;
+  }
+
+  .date-picker-card {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    padding: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .date-picker-center {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .date-nav-btn,
+  .date-nav-btn:last-child {
+    justify-self: stretch;
+    padding: 0.6rem 0.4rem;
+  }
+
+  .date-nav-btn:last-child {
+    text-align: right;
+  }
+
+  .dashboard-content {
+    gap: 1rem;
   }
 }

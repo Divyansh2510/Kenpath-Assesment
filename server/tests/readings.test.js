@@ -74,6 +74,21 @@ describe('Readings Endpoints', () => {
       expect(res.body.error.message).toBe('Please enter a glucose value.');
     });
 
+    it('should return 400 when value is null', async () => {
+      const res = await request(app)
+        .post('/api/readings')
+        .set('Authorization', `Bearer ${token1}`)
+        .send({
+          date: '2026-10-15',
+          slot: 'MORNING_FASTING',
+          value: null,
+        });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error.message).toBe('Please enter a glucose value.');
+      expect(res.body.error.fields.value).toBe('Please enter a glucose value.');
+    });
+
     // Rule 2: Value must be integer 40-600
     it('should return 400 when value is 39 (below minimum)', async () => {
       const res = await request(app)

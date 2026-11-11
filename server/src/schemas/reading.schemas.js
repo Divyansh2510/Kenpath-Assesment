@@ -8,11 +8,7 @@ const env = require('../config/env');
  */
 
 // Custom validator for integer-only glucose values
-const glucoseValue = z.union([
-  z.number(),
-  z.string(),
-]).transform((val, ctx) => {
-  // Handle empty strings
+const glucoseValue = z.any().transform((val, ctx) => {
   if (val === '' || val === null || val === undefined) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -21,29 +17,17 @@ const glucoseValue = z.union([
     return z.NEVER;
   }
 
-  // Convert to number
+  if (typeof val !== 'number' && typeof val !== 'string') {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `Value must be between ${MIN_VALUE} and ${MAX_VALUE} mg/dl.`,
+    });
+    return z.NEVER;
+  }
+
   const num = Number(val);
 
-  // Check if it's a valid number
-  if (isNaN(num)) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: `Value must be between ${MIN_VALUE} and ${MAX_VALUE} mg/dl.`,
-    });
-    return z.NEVER;
-  }
-
-  // Check if it's an integer (reject decimals)
-  if (!Number.isInteger(num)) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: `Value must be between ${MIN_VALUE} and ${MAX_VALUE} mg/dl.`,
-    });
-    return z.NEVER;
-  }
-
-  // Check range
-  if (num < MIN_VALUE || num > MAX_VALUE) {
+  if (!Number.isInteger(num) || num < MIN_VALUE || num > MAX_VALUE) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       message: `Value must be between ${MIN_VALUE} and ${MAX_VALUE} mg/dl.`,
@@ -64,8 +48,15 @@ const dateField = z.string()
   );
 
 // Slot validator
-const slotField = z.enum(SLOT_KEYS, {
-  errorMap: () => ({ message: 'Please select a valid time slot.' }),
+const slotField = z.any().transform((value, ctx) => {
+  if (!SLOT_KEYS.includes(value)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Please select a valid time slot.',
+    });
+    return z.NEVER;
+  }
+  return value;
 });
 
 const createReadingSchema = z.object({

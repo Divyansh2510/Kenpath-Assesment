@@ -1,45 +1,84 @@
 /**
  * Dashboard page - main page for managing readings.
  */
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { getTodayString } from '../utils/dates';
 import { useAuth } from '../context/AuthContext';
 import apiClient from '../api/client';
 import Navbar from '../components/Navbar';
 import ReadingForm from '../components/ReadingForm';
 import ReadingList from '../components/ReadingList';
+import Toast from '../components/Toast';
+import ErrorBanner from '../components/ErrorBanner';
 import './Dashboard.css';
+
+async function requestReadings(date) {
+  const response = await apiClient.get(`/readings?date=${date}`);
+  return response.data.data;
+}
 
 export default function Dashboard() {
   const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState(getTodayString());
   const [readings, setReadings] = useState([]);
+  const [loadedDate, setLoadedDate] = useState(null);
   const [editingReading, setEditingReading] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [readingsErrorState, setReadingsError] = useState({ date: '', message: '' });
+  const loading = loadedDate !== selectedDate;
+  const readingsError = readingsErrorState.date === selectedDate ? readingsErrorState.message : '';
 
-  useEffect(() => {
-    fetchReadings();
-  }, [selectedDate]);
-
-  const fetchReadings = async () => {
-    setLoading(true);
+  const fetchReadings = useCallback(async () => {
     try {
-      const response = await apiClient.get(`/readings?date=${selectedDate}`);
-      setReadings(response.data.data);
+      const data = await requestReadings(selectedDate);
+      setReadings(data);
+      setReadingsError({ date: selectedDate, message: '' });
     } catch (error) {
       console.error('Failed to fetch readings:', error);
+      setReadings([]);
+      setReadingsError({
+        date: selectedDate,
+        message: 'Unable to load readings. Please try again.',
+      });
     } finally {
-      setLoading(false);
+      setLoadedDate(selectedDate);
     }
-  };
+  }, [selectedDate]);
+
+  useEffect(() => {
+    let active = true;
+
+    requestReadings(selectedDate)
+      .then((data) => {
+        if (!active) return;
+        setReadings(data);
+        setReadingsError({ date: selectedDate, message: '' });
+      })
+      .catch((error) => {
+        if (!active) return;
+        console.error('Failed to fetch readings:', error);
+        setReadings([]);
+        setReadingsError({
+          date: selectedDate,
+          message: 'Unable to load readings. Please try again.',
+        });
+      })
+      .finally(() => {
+        if (active) setLoadedDate(selectedDate);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [selectedDate]);
 
   const handleCreate = async (formData) => {
     setFormLoading(true);
     try {
       await apiClient.post('/readings', formData);
       await fetchReadings();
-      // Show success message could be added here
+      setToast({ type: 'success', message: 'Reading saved successfully.' });
     } finally {
       setFormLoading(false);
     }
@@ -51,19 +90,30 @@ export default function Dashboard() {
       await apiClient.put(`/readings/${editingReading.id}`, formData);
       setEditingReading(null);
       await fetchReadings();
+      setToast({ type: 'success', message: 'Reading updated successfully.' });
     } finally {
       setFormLoading(false);
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (reading) => {
+    setToast(null);
     try {
-      await apiClient.delete(`/readings/${id}`);
+      await apiClient.delete(`/readings/${reading.id}`);
       await fetchReadings();
+      setToast({ type: 'success', message: 'Reading deleted successfully.' });
     } catch (error) {
       console.error('Failed to delete reading:', error);
-      alert('Failed to delete reading. Please try again.');
+      setToast({ type: 'error', message: 'Failed to delete reading. Please try again.' });
     }
+  };
+
+  const handleDeleteRequest = (reading) => {
+    setToast({
+      type: 'confirm',
+      message: `Delete ${reading.slotLabel} reading (${reading.value} mg/dl)?`,
+      reading,
+    });
   };
 
   const handleEdit = (reading) => {
@@ -73,6 +123,12 @@ export default function Dashboard() {
 
   const handleCancelEdit = () => {
     setEditingReading(null);
+  };
+
+  const confirmDelete = () => {
+    if (toast?.reading) {
+      handleDelete(toast.reading);
+    }
   };
 
   /* ---------- Quick stats ---------- */
@@ -177,10 +233,16 @@ export default function Dashboard() {
           </button>
         </div>
 
+        <ErrorBanner
+          message={readingsError}
+          onClose={() => setReadingsError({ date: selectedDate, message: '' })}
+        />
+
         {/* Main content */}
         <div className="dashboard-content">
           <div className="fade-in-up" style={{ animationDelay: '0.1s' }}>
             <ReadingForm
+              key={editingReading?.id ?? 'new'}
               reading={editingReading}
               onSubmit={editingReading ? handleUpdate : handleCreate}
               onCancel={editingReading ? handleCancelEdit : null}
@@ -194,12 +256,18 @@ export default function Dashboard() {
               readings={readings}
               date={selectedDate}
               onEdit={handleEdit}
-              onDelete={handleDelete}
+              onDelete={handleDeleteRequest}
               loading={loading}
             />
           </div>
         </div>
       </div>
+      <Toast
+        toast={toast}
+        onDismiss={() => setToast(null)}
+        onConfirm={confirmDelete}
+        onCancel={() => setToast(null)}
+      />
     </div>
   );
 }

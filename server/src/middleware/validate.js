@@ -29,13 +29,14 @@ function validate(schema) {
       if (error instanceof ZodError) {
         // Convert Zod errors to our standard format
         const fields = {};
-        error.errors.forEach((err) => {
+        const issues = error.issues;
+        issues.forEach((err) => {
           const field = err.path.join('.');
           fields[field] = err.message;
         });
 
         // Use the first error message as the main message
-        const firstError = error.errors[0];
+        const firstError = issues[0];
         const message = firstError.message;
 
         next(new AppError(400, 'VALIDATION_ERROR', message, fields));
