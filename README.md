@@ -179,7 +179,7 @@ Frontend automated tests are not currently configured.
 
 ## Screenshots
 
-Screenshots and demo video will be added in the `/screenshots` folder.
+Screenshots and demo recording are submitted separately from this repository.
 
 ## Notes
 
